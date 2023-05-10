@@ -7,6 +7,16 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
+class Favorite(Base):
+    __tablename__ = 'favorite'
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), primary_key=True)
+    character_id = Column(Integer, ForeignKey('characters.id'), primary_key=True)
+    planet_id = Column(Integer, ForeignKey('planets.id'), primary_key=True)
+
+
+
+# Define the User class
 class Users(Base):
     __tablename__ = 'users'
     # Here we define columns for the table person
@@ -15,6 +25,8 @@ class Users(Base):
     name = Column(String(250), nullable=False)
     email = Column(String(50), nullable=False)
     password = Column(String(20), nullable=False)
+    favorites = relationship('Favorite')
+
 
     def to_dict(self):
         return {
@@ -23,9 +35,9 @@ class Users(Base):
             'email': self.email
         }
 
-     
+# Define the Character class     
 class Characters(Base):
-    __tablename__ = 'address'
+    __tablename__ = 'characters'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
@@ -36,7 +48,9 @@ class Characters(Base):
     birth_year = Column(String(250))
     gender = Column(String(250))
     species = Column(String(250))
-    mass = Column(Numeric (4,2)) 
+    mass = Column(Numeric (4,2))
+    favorites = relationship('Favorite')
+ 
 
 
     def to_dict(self):
@@ -52,8 +66,9 @@ class Characters(Base):
             'mass': self.mass,
         }
     
+# Define the Vehicles class    
 class Vehicles(Base):
-    __tablename__ = 'address'
+    __tablename__ = 'vehicles'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
@@ -62,6 +77,8 @@ class Vehicles(Base):
     manufacturer = Column(String(250))
     length = Column(Numeric (4,2))
     passengers = Column(Integer)
+    favorites = relationship('Favorite')
+
 
     def to_dict(self):
         return {
@@ -72,9 +89,9 @@ class Vehicles(Base):
             'length': self.length,
             'passengers': self.passengers,
         }
-
+# Define the Planets class
 class Planets(Base):
-    __tablename__ = 'address'
+    __tablename__ = 'planets'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
@@ -84,6 +101,8 @@ class Planets(Base):
     diameter = Column(Integer)
     climate = Column(String(250))
     gravity = Column(Numeric (4,2))
+    favorites = relationship('Favorite')
+
 
     def to_dict(self):
         return {
