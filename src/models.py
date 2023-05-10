@@ -1,19 +1,36 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String, Numeric
+from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Table
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Favorite(Base):
-    __tablename__ = 'favorite'
-    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), primary_key=True)
-    character_id = Column(Integer, ForeignKey('characters.id'), primary_key=True)
-    planet_id = Column(Integer, ForeignKey('planets.id'), primary_key=True)
+#These column serves as a flag to indicate whether marked as a favorite by the user.
+user_vehicle_association_table = Table(
+    'user_vehicle_association',
+    Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('vehicle_id', Integer, ForeignKey('vehicles.id')),
+    Column('is_favorite', Integer, default=0)  # Additional column for favorite flag
+)
 
+user_character_association_table = Table(
+    'user_character_association',
+    Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('character_id', Integer, ForeignKey('characters.id')),
+    Column('is_favorite', Integer, default=0)  # Additional column for favorite flag
+)
+
+user_planet_association_table = Table(
+    'user_planet_association',
+    Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('planet_id', Integer, ForeignKey('planets.id')),
+    Column('is_favorite', Integer, default=0)  # Additional column for favorite flag
+)
 
 
 # Define the User class
@@ -25,7 +42,7 @@ class Users(Base):
     name = Column(String(250), nullable=False)
     email = Column(String(50), nullable=False)
     password = Column(String(20), nullable=False)
-    favorites = relationship('Favorite')
+    
 
 
     def to_dict(self):
@@ -49,7 +66,7 @@ class Characters(Base):
     gender = Column(String(250))
     species = Column(String(250))
     mass = Column(Numeric (4,2))
-    favorites = relationship('Favorite')
+    
  
 
 
@@ -77,7 +94,7 @@ class Vehicles(Base):
     manufacturer = Column(String(250))
     length = Column(Numeric (4,2))
     passengers = Column(Integer)
-    favorites = relationship('Favorite')
+   
 
 
     def to_dict(self):
@@ -101,7 +118,7 @@ class Planets(Base):
     diameter = Column(Integer)
     climate = Column(String(250))
     gravity = Column(Numeric (4,2))
-    favorites = relationship('Favorite')
+    
 
 
     def to_dict(self):
