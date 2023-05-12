@@ -5,136 +5,55 @@ from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
+
 Base = declarative_base()
 
-#These column serves as a flag to indicate whether marked as a favorite by the user.
-user_vehicle_association_table = Table(
-    'user_vehicle_association',
-    Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id')),
-    Column('vehicle_id', Integer, ForeignKey('vehicles.id')),
-    Column('is_favorite', Integer, default=0)  # Additional column for favorite flag
-)
-
-user_character_association_table = Table(
-    'user_character_association',
-    Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id')),
-    Column('character_id', Integer, ForeignKey('characters.id')),
-    Column('is_favorite', Integer, default=0)  # Additional column for favorite flag
-)
-
-user_planet_association_table = Table(
-    'user_planet_association',
-    Base.metadata,
-    Column('user_id', Integer, ForeignKey('users.id')),
-    Column('planet_id', Integer, ForeignKey('planets.id')),
-    Column('is_favorite', Integer, default=0)  # Additional column for favorite flag
-)
-
-
-# Define the User class
-class Users(Base):
-    __tablename__ = 'users'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
-    email = Column(String(50), nullable=False,unique=True)
-    password = Column(String(20), nullable=False)
-    
+    username = Column(String(30), unique=True)
+    password = Column(String(16))
+    email = Column(String, unique=True)
+    firstname = Column(String)
+    lastname = Column(String)
+    favorites = relationship("Favorites", back_populates="user")
 
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email
-        }
-
-# Define the Character class     
-class Characters(Base):
-    __tablename__ = 'characters'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Character(Base):
+    __tablename__ = "character"
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
-    height = Column(Numeric (4,2))
-    eye_color = Column(String(50))
-    hair_color = Column(String(50))
-    birth_year = Column(String(50))
-    gender = Column(String(50))
-    species = Column(String(50))
-    mass = Column(Numeric (4,2))
-    
- 
+    name = Column(String)
+    haircolor = Column(String)
+    eyecolor = Column(String)
+    favorites = relationship("Favorites", back_populates="character")
 
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'height': self.height,
-            'eye_color': self.eye_color,
-            'hair_color': self.hair_color,
-            'birth_year': self.birth_year,
-            'gender': self.gender,
-            'species': self.species,
-            'mass': self.mass,
-        }
-    
-# Define the Vehicles class    
-class Vehicles(Base):
-    __tablename__ = 'vehicles'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Planet(Base):
+    __tablename__ = 'planet'
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
-    model = Column(String(50), nullable=False)
-    manufacturer = Column(String(50))
-    length = Column(Numeric (4,2))
-    passengers = Column(Integer)
-   
+    name = Column(String)
+    climate = Column(String)
+    favorites = relationship("Favorites", back_populates="planet")
 
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'model': self.model,
-            'manufacturer': self.manufacturer,
-            'length': self.length,
-            'passengers': self.passengers,
-        }
-# Define the Planets class
-class Planets(Base):
-    __tablename__ = 'planets'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Favorites(Base):
+    __tablename__ = "favorite"
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
-    rotation_period = Column(Numeric (4,2))
-    orbital_period = Column(Numeric (4,2))
-    diameter = Column(Integer)
-    climate = Column(String(50))
-    gravity = Column(Numeric (4,2))
-    
+    character_id = Column(Integer, ForeignKey("character.id"), nullable=True)
+    planet_id = Column(Integer, ForeignKey('planet.id'), nullable=True)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User", back_populates="favorites")
+    character = relationship("Character", back_populates="favorites")
+    planet = relationship("Planet", back_populates="favorites")
 
+    def validate(self):
+        if self.planet_id is None and self.character_id is None:
+            return False
+        return True
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'rotation_period': self.rotation_period,
-            'orbital_period': self.orbital_period,
-            'diameter': self.diameter,
-            'climate': self.climate,
-            'gravity': self.gravity,
-        }
+def main():
+    # Create the database engine or perform other operations
+    pass
 
-
-
-      
+if __name__ == '__main__':
+    main()
 
 ## Draw from SQLAlchemy base
 render_er(Base, 'diagram.png')
