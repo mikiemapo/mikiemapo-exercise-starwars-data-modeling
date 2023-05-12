@@ -39,8 +39,8 @@ class Users(Base):
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-    email = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False)
+    email = Column(String(50), nullable=False,unique=True)
     password = Column(String(20), nullable=False)
     
 
@@ -58,13 +58,13 @@ class Characters(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    name = Column(String(50), nullable=False)
     height = Column(Numeric (4,2))
-    eye_color = Column(String(250))
-    hair_color = Column(String(250))
-    birth_year = Column(String(250))
-    gender = Column(String(250))
-    species = Column(String(250))
+    eye_color = Column(String(50))
+    hair_color = Column(String(50))
+    birth_year = Column(String(50))
+    gender = Column(String(50))
+    species = Column(String(50))
     mass = Column(Numeric (4,2))
     
  
@@ -89,9 +89,9 @@ class Vehicles(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
-    model = Column(String(250), nullable=False)
-    manufacturer = Column(String(250))
+    name = Column(String(50), nullable=False)
+    model = Column(String(50), nullable=False)
+    manufacturer = Column(String(50))
     length = Column(Numeric (4,2))
     passengers = Column(Integer)
    
@@ -112,11 +112,11 @@ class Planets(Base):
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    name = Column(String(50), nullable=False)
     rotation_period = Column(Numeric (4,2))
     orbital_period = Column(Numeric (4,2))
     diameter = Column(Integer)
-    climate = Column(String(250))
+    climate = Column(String(50))
     gravity = Column(Numeric (4,2))
     
 
