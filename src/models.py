@@ -49,7 +49,7 @@ class Favorites(Base):
         return True
 
 def main():
-    # Create the database engine or perform other operations
+    # Create the database engine or perform other operation
     pass
 
 if __name__ == '__main__':
